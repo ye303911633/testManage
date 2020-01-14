@@ -7,3 +7,12 @@ export const getCategory = () => {
     url: '/post'
   })
 }
+
+/* 获取列表详情 */
+export const postCategory = (params) => {
+  return axios({
+    method: 'post',
+    url: '/post',
+    params
+  })
+}
