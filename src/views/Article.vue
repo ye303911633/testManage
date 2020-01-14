@@ -50,9 +50,9 @@
         </el-table>
         <el-pagination @size-change="handleSizeChange"
                        @current-change="handleCurrentChange"
-                       :current-page="10"
+                       :current-page="pageIndex"
                        :page-sizes="[10, 20, 30, 40]"
-                       :page-size="5"
+                       :page-size="pageSize"
                        layout="total, sizes, prev, pager, next, jumper"
                        :total="total">
         </el-pagination>
@@ -62,7 +62,7 @@
 </template>
 
 <script>
-import { getCategory, postCategory } from '@/apis/article.js'
+import { postCategory } from '@/apis/article.js'
 export default {
   data () {
     return {
@@ -73,25 +73,31 @@ export default {
           type: ''
         }
       ],
-      pageSize: 20,
+      pageSize: 5,
       pageIndex: 1,
       total: 10
     }
   },
   async mounted () {
-    let res = await getCategory()
-    this.cateShow = res.data.data
-    // this.cateShow.total = res.data.total
-    let res1 = await postCategory({ pageSize: this.pageSize, pageIndex: this.pageIndex })
-    console.log(res)
-    console.log(res1)
+    this.init()
   },
   methods: {
     handleSizeChange (val) {
+      this.pageSize = val
+      this.init()
       console.log(`每页 ${val} 条`)
     },
     handleCurrentChange (val) {
+      this.pageIndex = val
+      this.init()
+
       console.log(`当前页: ${val}`)
+    },
+
+    async init () {
+      let res = await postCategory({ pageSize: this.pageSize, pageIndex: this.pageIndex })
+      this.cateShow = res.data.data
+      this.total = res.data.total
     }
   }
 }
